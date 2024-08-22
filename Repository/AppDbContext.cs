@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShoppingDemo.Models;
 
 namespace ShoppingDemo.Repository
 {
-	public class AppDbContext:DbContext
+	public class AppDbContext:IdentityDbContext<AppUserModel>
 	{
         public AppDbContext()
         {
@@ -12,11 +13,11 @@ namespace ShoppingDemo.Repository
 
 		public AppDbContext(DbContextOptions options) : base(options)
 		{
+
 		}
 		public DbSet<BrandModel> Brands { get; set; }
 		public DbSet<ProductModel> Products { get; set; }
 		public DbSet<CategoryModel> Categories { get; set; }
-		public DbSet<ProductModel> productModels { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
