@@ -1,4 +1,4 @@
-﻿@model UserModel
+﻿@model LoginViewModel
 @{
     ViewData["Title"] = "Register";
 }
@@ -34,3 +34,8 @@
 		</div>
 	</div>
 </section><!--/form-->
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ShoppingDemo.Models;
+using ShoppingDemo.Models.ViewModels;
 
 namespace ShoppingDemo.Controllers
 {
@@ -14,15 +15,28 @@ namespace ShoppingDemo.Controllers
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
-		public IActionResult Index()
+		public IActionResult Login(string returnUrl)
 		{
-			return View();
+			return View(new LoginViewModel { ReturnUrl = returnUrl});
 		}
-		
-		public async Task<IActionResult> Login()
+		[HttpPost]
+		public async Task<IActionResult> Login(LoginViewModel loginVM)
 		{
-			return View();
+			if (ModelState.IsValid)
+			{
+				Microsoft.AspNetCore.Identity.SignInResult 
+			result = await _signInManager.PasswordSignInAsync(loginVM.Username, loginVM.Password,false,false);
+				if (result.Succeeded)
+				{
+					return Redirect(loginVM.ReturnUrl ?? "/");
+				}
+				ModelState.AddModelError("", "Tài khoản hoặc mật khẩu đang bị sai xin vui lòng nhập lại");
+			}
+			return View(loginVM);
 		}
+
+
+
 		public IActionResult Create()
 		{
 			return View();
@@ -33,11 +47,11 @@ namespace ShoppingDemo.Controllers
 			if (ModelState.IsValid)
 			{
 				AppUserModel newUser = new AppUserModel { UserName = user.Username, Email = user.Email };
-				IdentityResult result = await _userManager.CreateAsync(newUser);
+				IdentityResult result = await _userManager.CreateAsync(newUser,user.Password);
 				if (result.Succeeded)
 				{
 					TempData["Success"] = "Tạo user thành công ";
-					return Redirect("/account");
+					return Redirect("/account/login");
 				}
 				foreach (IdentityError error in result.Errors)
 				{
@@ -47,6 +61,11 @@ namespace ShoppingDemo.Controllers
 			return View(user);
 		}
 
+		public async Task<IActionResult> Logout(string returnUrl = "/")
+		{
+			await _signInManager.SignOutAsync();
+			return Redirect(returnUrl);
+		}
 
 	}
 }

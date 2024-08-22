@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingDemo.Models;
 using ShoppingDemo.Repository;
@@ -6,7 +7,9 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class BrandController : Controller
+	[Authorize]
+
+	public class BrandController : Controller
     {
         private readonly AppDbContext _context;
         public BrandController(AppDbContext appDbContext)

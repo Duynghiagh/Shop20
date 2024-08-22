@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +9,9 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Areas.Admin.Controllers
 {
     [Area("Admin")]
+	[Authorize]
 
-    public class CategoryController : Controller
+	public class CategoryController : Controller
     {
         private readonly AppDbContext _context;
         public CategoryController(AppDbContext appDbContext)
