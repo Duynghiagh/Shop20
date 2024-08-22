@@ -5,57 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoppingDemo.Migrations
 {
-    public partial class IdentityUser : Migration
+    public partial class User : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductModel_Brands_BrandId",
-                table: "ProductModel");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProductModel_Categories_CategoryId",
-                table: "ProductModel");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_ProductModel",
-                table: "ProductModel");
-
-            migrationBuilder.RenameTable(
-                name: "ProductModel",
-                newName: "Products");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_ProductModel_CategoryId",
-                table: "Products",
-                newName: "IX_Products_CategoryId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_ProductModel_BrandId",
-                table: "Products",
-                newName: "IX_Products_BrandId");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Slug",
-                table: "Categories",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Slug",
-                table: "Brands",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Products",
-                table: "Products",
-                column: "Id");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -94,6 +47,38 @@ namespace ShoppingDemo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Brands",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Brands", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,6 +187,37 @@ namespace ShoppingDemo.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -241,33 +257,19 @@ namespace ShoppingDemo.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Products_Brands_BrandId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_BrandId",
                 table: "Products",
-                column: "BrandId",
-                principalTable: "Brands",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                column: "BrandId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Products_Categories_CategoryId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryId",
                 table: "Products",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Products_Brands_BrandId",
-                table: "Products");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Products_Categories_CategoryId",
-                table: "Products");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -284,69 +286,19 @@ namespace ShoppingDemo.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Products",
-                table: "Products");
+            migrationBuilder.DropTable(
+                name: "Brands");
 
-            migrationBuilder.RenameTable(
-                name: "Products",
-                newName: "ProductModel");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Products_CategoryId",
-                table: "ProductModel",
-                newName: "IX_ProductModel_CategoryId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Products_BrandId",
-                table: "ProductModel",
-                newName: "IX_ProductModel_BrandId");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Slug",
-                table: "Categories",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Slug",
-                table: "Brands",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_ProductModel",
-                table: "ProductModel",
-                column: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProductModel_Brands_BrandId",
-                table: "ProductModel",
-                column: "BrandId",
-                principalTable: "Brands",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProductModel_Categories_CategoryId",
-                table: "ProductModel",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

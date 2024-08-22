@@ -12,8 +12,8 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240822095003_IdentityUser")]
-    partial class IdentityUser
+    [Migration("20240822110211_User")]
+    partial class User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
