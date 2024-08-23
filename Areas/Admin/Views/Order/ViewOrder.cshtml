@@ -1,0 +1,33 @@
+﻿@model IEnumerable<OrderDetails>
+@{
+    ViewData["title"] = "Chi Tiết Đơn hàng";
+}
+<h1>List Order Details</h1>
+<a asp-action="Index">Quay lại danh sách</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">UserName</th>
+            <th scope="col"> Code</th>
+            <th scope="col"> ID sản phẩm</th>
+            <th scope="col">Tên sản phẩm</th>
+            <th scope="col"> Giá</th>
+            <th scope="col">Số lượng</th>
+          
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.UserName</th>
+                <td>@item.OrderCode</td>
+                <td>@item.ProductId</td>
+                <td>@item.Product.Name</td>
+                <td>@item.Price</td>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+    </tbody>
+</table>

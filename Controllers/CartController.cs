@@ -29,7 +29,7 @@ namespace ShoppingDemo.Controllers
         {
             return View("~/Views/Checkout/Index.cshtml");
         }
-        public async Task<IActionResult> Add(int Id)
+        public async Task<IActionResult> Add(long Id)
         {
             ProductModel product = await _context.Products.FindAsync(Id);
             List<CartItemModel> cart = HttpContext.Session.GetJson
@@ -95,7 +95,7 @@ namespace ShoppingDemo.Controllers
 			TempData["success"] = "Increase Item quantity to cart Successfully";
 			return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Remove(int Id)
+        public async Task<IActionResult> Remove(long Id)
         {
             List<CartItemModel> cart = HttpContext.Session.GetJson
                <List<CartItemModel>>("Cart") ?? new List<CartItemModel>();

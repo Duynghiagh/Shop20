@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["title"] = "List User";
+}
+<h1>List User</h1>
+<a class="btn btn-primary"asp-action="Create" asp-controller="User">Add User</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">UserName</th>
+            <th scope="col">Email</th>
+            <th scope="col">PasswordHash</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Role</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userWithRoles in Model)
+        {
+            <tr>
+                <td>@userWithRoles.User.Id</td>
+                <td>@userWithRoles.User.UserName</td>
+                <td>@userWithRoles.User.Email</td>
+                <td>@userWithRoles.User.PasswordHash</td>
+                <td>@userWithRoles.User.PhoneNumber</td>
+                <td>@userWithRoles.RoleName</td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-controller="User" asp-route-Id="@userWithRoles.User.Id">Sửa</a>
+                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="User" asp-route-Id="@userWithRoles.User.Id">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -79,7 +79,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             return View(product);
         }
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(long Id)
         {
             ProductModel product = await _context.Products.FindAsync(Id);
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
@@ -88,7 +88,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int Id, ProductModel product)
+        public async Task<IActionResult> Edit(long Id, ProductModel product)
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             ViewBag.Brands = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
@@ -158,7 +158,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             return View(product);
         }
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _context.Products.FindAsync(Id);
             if (product == null)

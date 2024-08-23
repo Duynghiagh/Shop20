@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingDemo.Models;
@@ -20,9 +20,11 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.IsEssential = true;
 });
-
+//Khai báo Identity
 builder.Services.AddIdentity<AppUserModel,IdentityRole>()
 	.AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddRazorPages();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -33,7 +35,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 	options.Password.RequireUppercase = false;
 	options.Password.RequiredLength = 4;
 
-	options.User.RequireUniqueEmail = true;
+	options.User.RequireUniqueEmail = false;
 });
 
 var app = builder.Build();
@@ -48,9 +50,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseAuthentication();//Đăng nhập
 
-app.UseAuthorization();
+app.UseAuthorization();//Check quyền
 
 app.MapControllerRoute(
     name: "Areas",
