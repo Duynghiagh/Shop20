@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using ShoppingDemo.Areas.Admin.Repository;
 using ShoppingDemo.Models;
 using ShoppingDemo.Repository;
 
@@ -10,6 +11,8 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration["ConnectionStrings:ConnectionDb"]);
 });
+//Add email Sender
+builder.Services.AddTransient<IEmailSender,EmailSender>();
 
 // Add services to the container. 
 builder.Services.AddControllersWithViews();
@@ -46,13 +49,15 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();//Đăng nhập
+app.UseAuthentication();
 
-app.UseAuthorization();//Check quyền
+app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "Areas",
@@ -61,17 +66,16 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "category",
     pattern: "/category/{Slug?}",
-    defaults: new { controller ="Category",action="Index"});
+    defaults: new { controller = "Category", action = "Index" });
 
 app.MapControllerRoute(
     name: "brand",
     pattern: "/brand/{Slug?}",
-    defaults: new { controller ="Brand",action="Index"});
+    defaults: new { controller = "Brand", action = "Index" });
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 //Seedingdata
 var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();

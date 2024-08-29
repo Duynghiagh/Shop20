@@ -1,9 +1,13 @@
 ﻿@model IEnumerable<ProductModel>
+@{
+    ViewData["Title"] = @ViewBag.Keyword;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
 <div class="col-sm-3">
     @Html.Partial("_SidebarPartial")
 </div>
 <style>
-    <style >
 
     .product-image-wrapper {
         margin-bottom: 20px; /* Khoảng cách dưới mỗi sản phẩm */
@@ -42,11 +46,10 @@
     }
 
 </style>
-</style>
 <div class="col-sm-9 padding-right">
     <div class="features_items">
         <!--features_items-->
-        <h2 class="title text-center">Sản Phẩm</h2>
+        <h2 class="title text-center">@ViewBag.Keyword</h2>
         @foreach (var item in Model)
         {
             <div class="col-sm-4">

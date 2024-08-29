@@ -1,18 +1,18 @@
 ﻿@{
-    ViewData["title"] = "List User";
+    ViewData["title"] = "Danh sách người dùng";
 }
-<h1>List User</h1>
-<a class="btn btn-primary"asp-action="Create" asp-controller="User">Add User</a>
-<table class="table">
+<h1>Danh sách người dùng</h1>
+<a class="btn btn-primary" asp-action="Create" asp-controller="User">Thêm người dùng</a>
+<table class="table" id="myTable">
     <thead>
         <tr>
             <th scope="col">ID</th>
-            <th scope="col">UserName</th>
+            <th scope="col">Tên người dùng</th>
             <th scope="col">Email</th>
-            <th scope="col">PasswordHash</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Role</th>
-            <th scope="col">Action</th>
+            <th scope="col">Mật khẩu (Hash)</th>
+            <th scope="col">Số điện thoại</th>
+            <th scope="col">Vai trò</th>
+            <th scope="col">Hành động</th>
         </tr>
     </thead>
     <tbody>

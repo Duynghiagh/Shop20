@@ -7,6 +7,8 @@
     <meta name="author" content="">
     <title>@ViewData["title"] - Admin Areas</title>
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="//cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css" rel="stylesheet">
     <link href="~/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/css/prettyPhoto.css" rel="stylesheet">
     <link href="~/css/price-range.css" rel="stylesheet">
@@ -18,10 +20,7 @@
     <script src="js/respond.min.js"></script>
     <![endif]-->
     <link rel="shortcut icon" href="images/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+    
 </head><!--/head-->
 
 <body>
@@ -40,11 +39,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-4">
-                        <div class="logo pull-left">
-                            <a href="index.html"><img src="images/home/logo.png" alt="" /></a>
-                        </div>
-                        <div class="btn-group pull-right">
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -54,7 +49,7 @@
             <!--header-bottom-->
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-9">
+                    <div class="col-sm-12 >
                         <div class="navbar-header">
                             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                                 <span class="sr-only">Toggle navigation</span>
@@ -63,22 +58,19 @@
                                 <span class="icon-bar"></span>
                             </button>
                         </div>
-                        <div class="mainmenu pull-left">
+                        <div class="mainmenu pull-left ">
                             <ul class="nav navbar-nav collapse navbar-collapse">
-                                @* <li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li> *@
-                                <li><a asp-controller="Product" asp-action="Index">Manage Product</a></li>
-                                <li><a asp-controller="Category" asp-action="Index">Manage Category</a></li>
-                                <li><a asp-controller="Brand" asp-action="Index">Manage Brand</a></li>
-                                <li><a asp-controller="Order" asp-action="Index">Manage Order</a></li>
-                                <li><a asp-controller="User" asp-action="Index">Manage User</a></li>
+                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li><a asp-controller="Product" asp-action="Index">Quản lý Sản phẩm</a></li>
+                                <li><a asp-controller="Category" asp-action="Index">Quản lý Danh mục</a></li>
+                                <li><a asp-controller="Brand" asp-action="Index">Quản lý Thương hiệu</a></li>
+                                <li><a asp-controller="Order" asp-action="Index">Quản lý Đơn hàng</a></li>
+                                <li><a asp-controller="User" asp-action="Index">Quản lý Người dùng</a></li>
+                                <li><a asp-controller="Role" asp-action="Index">Quản lý Vai trò</a></li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="search_box pull-right">
-                            <input type="text" placeholder="Search" />
-                        </div>
-                    </div>
+                   
                 </div>
             </div>
         </div><!--/header-bottom-->
@@ -101,8 +93,20 @@
     <script src="~/js/jquery.scrollUp.min.js"></script>
     <script src="~/js/price-range.js"></script>
     <script src="~/js/jquery.prettyPhoto.js"></script>
+    <script src="//cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
     <script src="~/js/main.js"></script>
     <script src="~/backend/js/site.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(function () {
+            var message = '@TempData["success"]';
+            if (message != '')
+                Swal.fire(message);
+        });
+    </script>
+    <script>
+        let table = new DataTable('#myTable');
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

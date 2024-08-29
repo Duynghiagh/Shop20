@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShoppingDemo.Models;
 using ShoppingDemo.Repository;
@@ -9,27 +7,50 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize]
+    [Authorize(Roles = "Admin")]
 
-	public class CategoryController : Controller
+
+    public class CategoryController : Controller
     {
         private readonly AppDbContext _context;
         public CategoryController(AppDbContext appDbContext)
         {
             _context = appDbContext;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg=1)
         {
+            List<CategoryModel> category = _context.Categories.ToList(); //33 datas
 
-            return View(await _context.Categories.OrderByDescending(p => p.Id).ToListAsync());
+            const int pageSize = 10; //10 items/trang
+
+            if (pg < 1) //page < 1;
+            {
+                pg = 1; //page ==1
+            }
+            int recsCount = category.Count(); //33 items;
+
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize; //(3 - 1) * 10; 
+
+            //category.Skip(20).Take(10).ToList()
+
+            var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(data);
         }
         [HttpGet]
+
+
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Create(CategoryModel category)
         {
           
@@ -63,6 +84,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             return View(category);
         }
+        [HttpGet]
         public async Task<IActionResult> Delete(int Id)
         {
             CategoryModel category = await _context.Categories.FindAsync(Id);
@@ -76,6 +98,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             TempData["success"] = "Danh mục đã bị xóa";
             return RedirectToAction("Index");
         }
+        [HttpGet]
         public async Task<IActionResult> Edit(int Id)
         {
             CategoryModel category = await _context.Categories.FindAsync(Id);

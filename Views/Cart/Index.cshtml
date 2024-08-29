@@ -7,12 +7,7 @@
 <h4>Gio Hang</h4>
 <section id="cart_items">
     <div class="container">
-        <div class="breadcrumbs">
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li class="active">Shopping Cart</li>
-            </ol>
-        </div>
+     
         <div class="table-responsive cart_info">
             <table class="table table-condensed">
                 <thead>
@@ -39,7 +34,7 @@
                                     <h4><a href="">@item.ProductName</a></h4>
                                 </td>
                                 <td class="cart_price">
-                                    <p>@item.Price</p>
+                                    <p>@item.Price.ToString("#,##0 VNĐ")</p>
                                 </td>
                                 <td class="cart_quantity">
                                     <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+ </a>
@@ -49,7 +44,7 @@
 
                                 </td>
                                 <td class="cart_total">
-                                    <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString()</p>
+                                    <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,##0 VNĐ")</p>
                                 </td>
 
                             </tr>
@@ -62,7 +57,7 @@
                             }
                         </tr>
                         <tr rowspan="6">
-                            <td colspan="6"> Tổng tiền: <p class="cart_total_price">@Model.GrandTotal.ToString()</p>
+                        <td colspan="6"> Tổng tiền: <p class="cart_total_price">@Model.GrandTotal.ToString("#,##0 VNĐ")</p>
                             <td>
                             
                         </tr>

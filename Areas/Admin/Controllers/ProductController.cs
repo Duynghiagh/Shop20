@@ -9,7 +9,7 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,10 +19,38 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             _context = appDbContext;
             _webHostEnvironment = webHostEnvironment;
         }
-        public async Task<IActionResult> Index()
-        {
 
-            return View(await _context.Products.OrderByDescending(p => p.Id).Include(p => p.Category).Include(p => p.Brand).ToListAsync());
+        public async Task<IActionResult> Index(int pg = 1)
+        {
+            const int pageSize = 10; // Số lượng sản phẩm trên mỗi trang
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+
+            // Lấy tổng số sản phẩm
+            int recsCount = await _context.Products.CountAsync();
+
+            // Tính số sản phẩm cần bỏ qua
+            int recSkip = (pg - 1) * pageSize;
+
+            // Lấy sản phẩm theo phân trang
+            var products = await _context.Products
+                .OrderByDescending(p => p.Id)
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Skip(recSkip)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Tạo đối tượng phân trang
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            // Truyền dữ liệu sang View
+            ViewBag.Pager = pager;
+
+            return View(products);
         }
         [HttpGet]
         public IActionResult Create()
@@ -79,6 +107,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             return View(product);
         }
+        [HttpGet]
         public async Task<IActionResult> Edit(long Id)
         {
             ProductModel product = await _context.Products.FindAsync(Id);
@@ -158,6 +187,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             return View(product);
         }
+        [HttpGet]
         public async Task<IActionResult> Delete(long Id)
         {
             ProductModel product = await _context.Products.FindAsync(Id);
@@ -181,7 +211,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             }
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-            TempData["error"] = "Sản phẩm đã bị xóa";
+            TempData["success"] = "Sản phẩm đã bị xóa";
             return RedirectToAction("Index");
         }
     }

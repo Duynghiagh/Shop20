@@ -10,12 +10,27 @@ namespace ShoppingDemo.Controllers
 	{
 		private UserManager<AppUserModel> _userManager;
 		private SignInManager<AppUserModel> _signInManager;
-		public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager)
+        public AccountController()
+        {
+            
+        }
+        public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
-		public IActionResult Login(string returnUrl)
+
+        //public async Task<ActionResult> Profile()
+        //{
+        //    var user = await UserManager.FindByNameAsync(User.Identity.Name);
+        //    var item = new CreateAccountViewModel();
+        //    item.Email = user.Email;
+        //    item.FullName = user.FullName;
+        //    item.Phone = user.Phone;
+        //    item.UserName = user.UserName;
+        //    return View(item);
+        //}
+        public IActionResult Login(string returnUrl)
 		{
 			return View(new LoginViewModel { ReturnUrl = returnUrl});
 		}

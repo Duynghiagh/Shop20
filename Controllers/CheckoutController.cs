@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingDemo.Areas.Admin.Repository;
 using ShoppingDemo.Models;
 using ShoppingDemo.Repository;
 using System.Security.Claims;
@@ -8,9 +9,11 @@ namespace ShoppingDemo.Controllers
 	public class CheckoutController : Controller
 	{
 		private readonly AppDbContext _context;
-		public CheckoutController(AppDbContext appDbContext)
+		private readonly IEmailSender _emailSender;
+		public CheckoutController(IEmailSender emailSender, AppDbContext appDbContext)
 		{
 			_context = appDbContext;
+			_emailSender = emailSender;
 		}
 		public async Task<IActionResult> Checkout()
 		{
@@ -44,6 +47,11 @@ namespace ShoppingDemo.Controllers
 
 				}
 				HttpContext.Session.Remove("Cart");
+				//Send mail order when success
+				var receiver = userEmail;
+				var subject = "Đặt hàng thành công";
+				var message = "Đặt hàng thành công, trải nghiệm dịch vụ";
+				await _emailSender.SenEmailAsync(receiver, subject, message);
 				TempData["success"] = "Đơn hàng đã được tạo, vui long chờ duyệt đơn hàng";
 				return RedirectToAction("Index", "Cart");
 

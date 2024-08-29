@@ -3,42 +3,91 @@
     @Html.Partial("_SidebarPartial")
 </div>
 <style>
-    .product-image-wrapper{
-    height: 450px;
+  
+    .product-image-wrapper {
+        margin-bottom: 20px; /* Khoảng cách dưới mỗi sản phẩm */
     }
+
+    .product-image-container {
+        width: 100%;
+        height: 150px; /* Đặt chiều cao cố định cho hình ảnh */
+        overflow: hidden; /* Ẩn các phần của hình ảnh ra ngoài vùng chứa */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Đảm bảo hình ảnh bao phủ toàn bộ phần tử mà không bị biến dạng */
+        }
+
+    .productinfo {
+        text-align: center;
+    }
+
+        .productinfo h2 {
+            font-size: 18px; /* Điều chỉnh kích thước tiêu đề */
+            margin: 10px 0; /* Khoảng cách trên và dưới tiêu đề */
+        }
+
+        .productinfo p {
+            margin: 5px 0; /* Khoảng cách trên và dưới các đoạn văn */
+        }
+
+    .btn.add-to-cart {
+        margin-top: 10px; /* Khoảng cách trên nút "Thêm vào giỏ hàng" */
+    }
+
 </style>
 <div class="col-sm-9 padding-right">
     <div class="features_items">
         <!--features_items-->
-        <h2 class="title text-center">Features Items</h2>
+        <h2 class="title text-center">Sản Phẩm</h2>
         @foreach (var item in Model)
         {
             <div class="col-sm-4">
                 <div class="product-image-wrapper">
                     <div class="single-products">
-                       
                         <div class="productinfo text-center">
-                             <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
-                            <img src="~/media/products/@item.Image" alt="@item.Name" width="100%"/>
-                            <h2>$@item.Price</h2>
-                            <p>@item.Name</p>
-                            <p>Danh mục: @item.Category.Name</p>
-                            <p>Thương hiệu: @item.Brand.Name</p>
+                            <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
+                                <div class="product-image-container">
+                                    <img src="~/media/products/@item.Image" alt="@item.Name" />
+                                </div>
+                                <h2>@item.Price.ToString("#,##0 VNĐ")</h2>
+                                <p>@item.Name</p>
+                                <p>Danh mục: @item.Category.Name</p>
+                                <p>Thương hiệu: @item.Brand.Name</p>
                             </a>
-                            <a class="btn btn-default add-to-cart" asp-action="Add" asp-controller="Cart"asp-route-Id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                            <button class="btn btn-default add-to-cart" data-product_id="@item.Id">
+                                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                            </button>
                         </div>
-                       
-                    </div>
-                    <div class="choose">
-                        <ul class="nav nav-pills nav-justified">
-                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-                            <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
+    
         }
 
     </div><!--features_items-->
 </div>
-    
+    @section Scripts{
+        <script>
+            $(document).ready(function () {
+                $('.add-to-cart').click(function () {
+                    var Id = $(this).data("product_id");
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Add","Cart")",
+                        data: { Id: Id },
+                        success: function (result) {
+                            if (result) {
+                                Swal.fire("Thêm vào giỏ hàng thành công");
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+    }

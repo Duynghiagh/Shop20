@@ -1,24 +1,24 @@
 ﻿@model BrandModel
 @{
-    ViewData["title"] = "Create Brand";
+    ViewData["title"] = "Tạo Thương hiệu";
 
 }
-<h1>Create Brand </h1>
+<h1>Tạo Thương hiệu</h1>
 <div class="col-md-9">
     <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="mb-3">
-            <label class="form-label">Name</label>
+            <label class="form-label">Tên</label>
             <input asp-for="Name" class="form-control">
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label class="form-label">Description</label>
+            <label class="form-label">Mô tả</label>
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger" />
         </div>
         <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">Trạng thái</label>
             <select asp-for="Status" class="form-control">
                 <option value="1">Hiển thị</option>
                 <option value="0">Ẩn</option>
@@ -26,10 +26,10 @@
             <span asp-validation-for="Status" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary">Create</button>
+            <button class="btn btn-primary">Tạo</button>
         </div>
     </form>
-    <a asp-action="Index">Back to List Brands</a>
+    <a asp-action="Index">Trở lại Danh sách Thương hiệu</a>
 </div>
 @section Scripts {
     @{

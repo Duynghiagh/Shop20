@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("Admin/User")]
+    [Authorize(Roles = "Admin")]
+
     public class UserController : Controller
     {
         private readonly UserManager<AppUserModel> _userManager;
@@ -22,8 +24,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
             _rollManager = rollManager;
             _context = appDbContext;
         }
-        [HttpGet]
-        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             var userWithRoles = await (from u in _context.Users
@@ -34,7 +34,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
 
         }
         [HttpGet]
-        [Route("Create")]
         public async Task<IActionResult> Create()
         {
             var roles = await _rollManager.Roles.ToListAsync();
@@ -43,7 +42,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Create")]
         public async Task<IActionResult> Create(AppUserModel user)
         {
             if (ModelState.IsValid)
@@ -94,7 +92,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
 
         }
         [HttpGet]
-        [Route("Edit")]
         public async Task<IActionResult> Edit(string Id)
         {
             if (string.IsNullOrEmpty(Id))
@@ -112,7 +109,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Edit")]
         public async Task<IActionResult> Edit(string Id, AppUserModel user)
         {
             var existingUser = await _userManager.FindByIdAsync(Id);
@@ -146,7 +142,6 @@ namespace ShoppingDemo.Areas.Admin.Controllers
 
         }
         [HttpGet]
-        [Route("Delete")]
         public async Task<IActionResult> Delete(string Id)
         {
             if (string.IsNullOrEmpty(Id))
