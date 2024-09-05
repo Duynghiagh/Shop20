@@ -51,10 +51,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
                                         <li><a asp-controller="Admin" asp-action="Index"><i class="fa fa-user"></i> Tài Khoản</a></li>
                                     }
                                 }
+                              
                                 else
                                 {
                                     <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Đang Nhập</a></li>
                                 }
+                                <li><a asp-controller="Account" asp-action="Profile"><i class="fa fa-user"></i> Thông tin</a></li>
                             </ul>
                         </div>
                     </div>

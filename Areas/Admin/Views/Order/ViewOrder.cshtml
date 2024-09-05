@@ -6,12 +6,11 @@
 }
 <h1>Chi Tiết Đơn hàng</h1>
 <a asp-action="Index">Quay lại danh sách</a>
-<table class="table">
+<table class="table"id="detail_order">
     <thead>
         <tr>
 
             <th scope="col">Id</th>
-            <th scope="col">Mã Đơn hàng</th>
             <th scope="col">Tên người dùng</th>
             <th scope="col">Tên sản phẩm</th>
             <th scope="col">Giá sản phẩm</th>
@@ -28,7 +27,6 @@
             <tr>
                 <input type="hidden" asp-for="@item.OrderCode" class="getId" />
                 <td>@item.Id</td>
-                <td>@item.OrderCode</td>
                 <td>@item.UserName</td>
                 <td>@item.Product.Name</td>
                 <td>@item.Price</td>
@@ -37,36 +35,64 @@
             </tr>
         }
         <tr>
-            <td class="text-end" colspan="6">Tổng cộng: @total.ToString("#,##0 VNĐ")</td>
+           
+           <td>Tổng Cộng:</td>
+           <td></td>
+           <td></td>
+           <td></td>
+            <td>@total.ToString("#,##0 VNĐ")</td>
+           
             <td class="text-end">
                 <select class="form-control select-update-order">
+                    <option value="">Chọn trạng thái</option>
                     <option value="1">Đơn hàng mới</option>
                     <option value="0">Đã xử lý</option>
                 </select>
             </td>
         </tr>
-    </tbody>
+    </tbody>    
 </table>
 @section Scripts {
+    <script>
+         new DataTable('#detail_order', {
+            layout: {
+                topStart: {
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                }
+            }
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $('.select-update-order').change(function () {
                 var status = $(this).val();
                 var ordercode = $('.getId').val();
+
+                console.log("Status: " + status); // Debug
+                console.log("OrderCode: " + ordercode); // Debug
+
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("UpdateOrder")",
                     data: { status: status, ordercode: ordercode },
                     success: function (result) {
                         if (result.success) {
-                            swal.fire("Cập nhật đơn hàng thành công");
-                        }
-                        else {
-                            swal.fire("Cập nhật đơn hàng thất bại" + result.message);
+                            swal.fire("Cập nhật đơn hàng thành công")
+                                .then(function () {
+                                    window.location.href = '@Url.Action("Index", "Order")';
+                                });
+                        } else {
+                            swal.fire("Cập nhật đơn hàng thất bại: " + result.message);
                         }
                     },
+                    error: function () {
+                        swal.fire("Có lỗi xảy ra khi gửi yêu cầu");
+                    }
                 });
             });
         });
+
     </script>
+
+
 }

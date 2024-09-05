@@ -49,22 +49,51 @@ namespace ShoppingDemo.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateOrder(string ordercode, int status)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o=>o.OrderCode == ordercode);
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderCode == ordercode);
             if (order == null)
             {
-                return NotFound();   
+                return Json(new { success = false, message = "Đơn hàng không tồn tại" });
             }
+
+            // Cập nhật trạng thái đơn hàng
             order.Status = status;
+
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(new {success = true, message="Order status updated successfully"});
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred  while updating the order status");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật đơn hàng: " + ex.Message });
             }
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteOrder(string ordercode)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderCode == ordercode);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            _context.Orders.Remove(order);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                // Chuyển hướng về trang Index của ViewOrder
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while deleting the order");
+            }
+        }
+
 
     }
 }

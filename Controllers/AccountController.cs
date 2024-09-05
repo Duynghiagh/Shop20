@@ -10,26 +10,52 @@ namespace ShoppingDemo.Controllers
 	{
 		private UserManager<AppUserModel> _userManager;
 		private SignInManager<AppUserModel> _signInManager;
-        public AccountController()
-        {
-            
-        }
+      
+      
         public AccountController(SignInManager<AppUserModel> signInManager, UserManager<AppUserModel> userManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
 
-        //public async Task<ActionResult> Profile()
-        //{
-        //    var user = await UserManager.FindByNameAsync(User.Identity.Name);
-        //    var item = new CreateAccountViewModel();
-        //    item.Email = user.Email;
-        //    item.FullName = user.FullName;
-        //    item.Phone = user.Phone;
-        //    item.UserName = user.UserName;
-        //    return View(item);
-        //}
+        public async Task<ActionResult> Profile()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var item = new CreateAccountViewModel
+            {
+                Email = user.Email,
+                FullName = user.FullName,
+                Phone = user.PhoneNumber,
+                UserName = user.UserName
+            };
+
+            return View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> PostProfile(CreateAccountViewModel req)
+        {
+            var user = await _userManager.FindByEmailAsync(req.Email);
+            user.FullName = req.FullName;
+            user.PhoneNumber = req.Phone;
+            var rs = await _userManager.UpdateAsync(user);
+            if (rs.Succeeded)
+            {
+                return RedirectToAction("Profile");
+            }
+            return View(req);
+        }
         public IActionResult Login(string returnUrl)
 		{
 			return View(new LoginViewModel { ReturnUrl = returnUrl});

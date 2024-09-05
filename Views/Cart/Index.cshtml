@@ -1,78 +1,93 @@
 ﻿@using ShoppingDemo.Models.ViewModels
 @model CartItemViewModel
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 
-<h4>Gio Hang</h4>
+<h4>Giỏ hàng</h4>
 <section id="cart_items">
     <div class="container">
-     
-        <div class="table-responsive cart_info">
-            <table class="table table-condensed">
-                <thead>
-                    <tr class="cart_menu">
-                        <td class="image">Item</td>
-                        <td class="description"></td>
-                        <td class="price">Giá</td>
-                        <td class="quantity">Số lượng</td>
-                        <td class="total">tổng cộng</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.CartItems.Count > 0)
-                    {
-                        @foreach (var item in Model.CartItems)
+        <form asp-action="UpdateQuantity" method="post">
+            <div class="table-responsive cart_info">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr class="cart_menu">
+                            <td class="image">Ảnh</td>
+                            <td class="description">Tên</td>
+                            <td class="price">Giá</td>
+                            <td class="quantity">Số lượng</td>
+                            <td class="total">Tổng cộng</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.CartItems.Count > 0)
                         {
-
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <tr>
+                                    <td class="cart_product">
+                                        <a><img src="~/media/products/@item.Image" alt="" height="50"></a>
+                                    </td>
+                                    <td class="cart_description">
+                                        <h4><a href="@Url.Action("Details", "Product", new { id = item.ProductId })">@item.ProductName</a></h4>
+                                    </td>
+                                    <td class="cart_price">
+                                        <p>@item.Price.ToString("#,##0 VNĐ")</p>
+                                    </td>
+                                    <td class="cart_quantity">
+                                        <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+ </a>
+                                        <input class="cart_quantity_input" type="number" name="cartItems[@item.ProductId]" value="@item.Quantity" min="1" step="1" autocomplete="off">
+                                        <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">- </a>
+                                        <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa </a>
+                                    </td>
+                                    <td class="cart_total">
+                                        <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,##0 VNĐ")</p>
+                                    </td>
+                                </tr>
+                            }
                             <tr>
-                                <td class="cart_product">
-                                    <a href=""><img src="~/media/products/@item.Image" alt="" height="50"></a>
+                                <td colspan="6">
+                                    <button type="submit" class="btn btn-primary">Cập nhật số lượng</button>
                                 </td>
-                                <td class="cart_description">
-                                    <h4><a href="">@item.ProductName</a></h4>
-                                </td>
-                                <td class="cart_price">
-                                    <p>@item.Price.ToString("#,##0 VNĐ")</p>
-                                </td>
-                                <td class="cart_quantity">
-                                    <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+ </a>
-                                    <input class="cart_quantity_input" type="text" name="quantity" value="@item.Quantity" autocomplete="off" size="2">
-                                    <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">- </a>
-                                    <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa </a>
-
-                                </td>
-                                <td class="cart_total">
-                                    <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,##0 VNĐ")</p>
-                                </td>
-
+                            </tr>
+                            <tr>
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <td><a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a> </td>
+                                }
+                            </tr>
+                            <tr rowspan="6">
+                                <td colspan="6"> Tổng tiền: <p class="cart_total_price">@Model.GrandTotal.ToString("#,##0 VNĐ")</p></td>
                             </tr>
                         }
-                    <td><a class="btn btn-info btn-sm" asp-controller="Cart" asp-action="Clear">Clear All </a> </td>
-                        <tr>
-                            @if (User.Identity?.IsAuthenticated ?? false)
-                            {
-                            <td><a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Checkout</a> </td>
-                            }
-                        </tr>
-                        <tr rowspan="6">
-                        <td colspan="6"> Tổng tiền: <p class="cart_total_price">@Model.GrandTotal.ToString("#,##0 VNĐ")</p>
-                            <td>
-                            
-                        </tr>
-
-                    }
-                    else
-                    {
-                        <try>
-                            <td colspan="5">
-                                <h4>Your Cart is Empty</h4>
-                            </td>
-                        </try>
-                    }
-                </tbody>
-            </table>
-        </div>
+                        else
+                        {
+                            <tr>
+                                <td colspan="6">
+                                    <h4>Giỏ hàng của bạn đang trống</h4>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
 </section> <!--/#cart_items-->
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.cart_quantity_input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    // Loại bỏ tất cả các ký tự không phải là số và không phải là dấu phân cách
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+                    // Nếu giá trị nhỏ hơn 1, đặt lại giá trị về 1
+                    if (e.target.value < 1) {
+                        e.target.value = 1;
+                    }
+                });
+            });
+        });
+    </script>
+
+
+}
