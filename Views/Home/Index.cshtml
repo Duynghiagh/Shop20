@@ -3,7 +3,7 @@
     @Html.Partial("_SidebarPartial")
 </div>
 <style>
-  
+
     .product-image-wrapper {
         margin-bottom: 20px; /* Khoảng cách dưới mỗi sản phẩm */
     }
@@ -41,6 +41,8 @@
     }
 
 </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 <div class="col-sm-9 padding-right">
     <div class="features_items">
         <!--features_items-->
@@ -60,32 +62,79 @@
                                 <p>Danh mục: @item.Category.Name</p>
                                 <p>Thương hiệu: @item.Brand.Name</p>
                             </a>
-                        
+                            <div class="choose">
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <ul class="nav nav-pills nav-justified">
+                                        <li><button class="btn btn-danger add-btn-wishlist" data-product_id="@item.Id"><i class="fa-solid fa-heart"></i> Yêu thích</button></li>
+                                        <li><button class="btn btn-info add-btn-compare" data-product_id="@item.Id"> <i class="fas fa-exchange-alt"></i> So sánh</button></li>
+                                    </ul>
+                                }
+                            </div>
                         </div>
                     </div>
+
+                   
+
                 </div>
             </div>
-    
+
         }
 
     </div><!--features_items-->
 </div>
-    @section Scripts{
-        <script>
-            $(document).ready(function () {
-                $('.add-to-cart').click(function () {
-                    var Id = $(this).data("product_id");
-                    $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("Add","Cart")",
-                        data: { Id: Id },
-                        success: function (result) {
-                            if (result) {
-                                Swal.fire("Thêm vào giỏ hàng thành công");
-                            }
+@section Scripts {
+   @*  <script>
+        $(document).ready(function () {
+            $('.add-to-cart').click(function () {
+                var Id = $(this).data("product_id");
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Add", "Cart")",
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result) {
+                            Swal.fire("Thêm vào giỏ hàng thành công");
                         }
-                    });
+                    }
                 });
             });
-        </script>
-    }
+        });
+    </script> *@
+    @* Yêu thích *@
+    <script>
+        $(document).ready(function () {
+            $('.add-btn-wishlist').click(function () {
+                var Id = $(this).data("product_id");
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddWishList", "Home")",
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result) {
+                            Swal.fire("Thêm vào yêu thích thành công");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+        @* So sánh *@
+    <script>
+        $(document).ready(function () {
+            $('.add-btn-compare').click(function () {
+                var Id = $(this).data("product_id");
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddCompare", "Home")",
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result) {
+                            Swal.fire("Thêm vào so sánh thành công");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoppingDemo.Repository;
 
@@ -11,9 +12,11 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240908123037_Sliders")]
+    partial class Sliders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,27 +286,6 @@ namespace ShoppingDemo.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ShoppingDemo.Models.CompareModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("compareModels");
-                });
-
             modelBuilder.Entity("ShoppingDemo.Models.OrderDetails", b =>
                 {
                     b.Property<int>("Id")
@@ -426,27 +408,6 @@ namespace ShoppingDemo.Migrations
                     b.ToTable("Sliders");
                 });
 
-            modelBuilder.Entity("ShoppingDemo.Models.WishlistModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("wishlistModels");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -498,17 +459,6 @@ namespace ShoppingDemo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingDemo.Models.CompareModel", b =>
-                {
-                    b.HasOne("ShoppingDemo.Models.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ShoppingDemo.Models.OrderDetails", b =>
                 {
                     b.HasOne("ShoppingDemo.Models.ProductModel", "Product")
@@ -537,17 +487,6 @@ namespace ShoppingDemo.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ShoppingDemo.Models.WishlistModel", b =>
-                {
-                    b.HasOne("ShoppingDemo.Models.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }
