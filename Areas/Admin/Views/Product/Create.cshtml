@@ -4,7 +4,7 @@
 }
 <h1>Tạo Sản phẩm</h1>
 <div class="col-md-9">
-    <form asp-action="Create" enctype="multipart/form-data">
+    <form autocomplete="off" asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="mb-3">
             <label class="form-label">Tên Sản phẩm</label>
@@ -13,7 +13,10 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Giá Sản phẩm</label>
-            <input asp-for="Price" class="form-control">
+            <input asp-for="Price" pattern="[0-9.,]+" class="form-control typing-price"/>
+
+            <span id="price-convert"></span>
+           
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
         <div class="mb-3">
@@ -60,4 +63,16 @@
     <script>
         CKEDITOR.replace('Description');
     </script>
+
+    <script>
+        $(".typing-price").on("keyup", function () {
+            var currency_input = $(this).val();
+            $("#price-convert").html(
+                new Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(
+                    currency_input
+                )
+            );
+        });
+    </script>
+
 }

@@ -87,5 +87,38 @@ namespace ShoppingDemo.Controllers
                 return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
         }
+        public async Task<IActionResult> Compare()
+        {
+            var compare_p = await (from c in _context.compareModels
+                                   join p in _context.Products on c.ProductId equals p.Id
+                                   join u in _context.Users on c.UserId equals u.Id
+                                   select new { User = u, Product = p, Compares = c }).ToListAsync();
+            return View(compare_p);
+        }
+        public async Task<IActionResult> DeleteCompare(int Id)
+        {
+            CompareModel compare = await _context.compareModels.FindAsync(Id);
+            _context.compareModels.Remove(compare);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "So sánh đã xóa thành công";
+            return RedirectToAction("Compare","Home");
+        }
+        public async Task<IActionResult> DeleteWishlist(int Id)
+        {
+            WishlistModel wishlist= await _context.wishlistModels.FindAsync(Id);
+            _context.wishlistModels.Remove(wishlist);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Yêu thích đã xóa thành công";
+            return RedirectToAction("Wishlist", "Home");
+        }
+        public async Task<IActionResult> Wishlist()
+        {
+            var wishlist_p = await (from w in _context.wishlistModels
+                                   join p in _context.Products on w.ProductId equals p.Id
+                                   join u in _context.Users on w.UserId equals u.Id
+                                   select new { User = u, Product = p, Wishlists = w }).ToListAsync();
+            return View(wishlist_p);
+        }
     }
 }
+
