@@ -17,6 +17,8 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Tên Sản phẩm</th>
+            <th scope="col">Số lượng</th>
+            <th scope="col">Đã bán</th>
             <th scope="col">Mô tả Sản phẩm</th>
             <th scope="col">Giá Sản phẩm</th>
             <th scope="col">Hình ảnh Sản phẩm</th>
@@ -32,6 +34,8 @@
             <tr>
                 <th scope="row">@item.Id</th>
                 <td>@item.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.Sold</td>
                 <td>@Html.Raw(@item.Description)</td>
                 <td>@item.Price.ToString("#,##0 VNĐ")</td>
                 <td><img src="~/media/products/@item.Image" width="100" height="80" /></td>
@@ -39,8 +43,9 @@
                 <td>@item.Category.Name</td>
                 <td>@item.Brand.Name</td>
                 <td>
-                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-controller="Product" asp-route-Id="@item.Id">Sửa</a>
-                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Product" asp-route-Id="@item.Id">Xóa</a>
+                    <a asp-action="Edit" class="btn btn-warning " asp-controller="Product" asp-route-Id="@item.Id">Sửa</a>
+                    <a asp-action="Delete" class="btn btn-danger confirmDeletion" asp-controller="Product" asp-route-Id="@item.Id">Xóa</a>
+                    <a class="btn btn-info" asp-controller="Product" asp-action="AddQuantity" asp-route-Id="@item.Id">Số lượng</a>
                 </td>
             </tr>
         }

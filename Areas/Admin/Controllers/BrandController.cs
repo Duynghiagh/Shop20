@@ -132,6 +132,7 @@ namespace ShoppingDemo.Areas.Admin.Controllers
                 foreach (var value in ModelState.Values)
                 {
                     foreach (var error in value.Errors)
+
                     {
                         errors.Add(error.ErrorMessage);
                     }

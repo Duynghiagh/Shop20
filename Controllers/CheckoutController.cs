@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShoppingDemo.Areas.Admin.Repository;
 using ShoppingDemo.Models;
 using ShoppingDemo.Repository;
@@ -42,6 +43,10 @@ namespace ShoppingDemo.Controllers
 					orderdetails.ProductId = cart.ProductId;
 					orderdetails.Price = cart.Price;
 					orderdetails.Quantity = cart.Quantity;
+					var product = await _context.Products.Where(p=>p.Id == cart.ProductId).FirstAsync();
+					product.Quantity -= cart.Quantity;
+					product.Sold += cart.Quantity;
+					_context.Update(product);
 					_context.Add(orderdetails);
 					_context.SaveChanges();
 

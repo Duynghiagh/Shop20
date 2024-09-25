@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShoppingDemo.Models;
 using ShoppingDemo.Models.ViewModels;
 using ShoppingDemo.Repository;
@@ -54,14 +55,14 @@ namespace ShoppingDemo.Controllers
                     ProductId = product.Id,
                     ProductName = product.Name,
                     Price = product.Price,
-                    Quantity = quantity,
+                    Quantity = 1,
                     Image = product.Image // Giả sử bạn có thuộc tính Image
                 });
             }
             else
             {
                 // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng của nó
-                cartItem.Quantity += quantity;
+                cartItem.Quantity += 1;
             }
 
             // Lưu giỏ hàng đã cập nhật trở lại session
@@ -128,16 +129,22 @@ namespace ShoppingDemo.Controllers
 
         public async Task<IActionResult> Increase(int Id)
         {
+            ProductModel product = await _context.Products.Where(p => p.Id == Id).FirstOrDefaultAsync();
             List<CartItemModel> cart = HttpContext.Session.GetJson
                <List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
             CartItemModel cartItem = cart.Where(c => c.ProductId == Id).FirstOrDefault();
-            if (cartItem.Quantity >= 1)
+            if (cartItem.Quantity >= 1 && product.Quantity > cartItem.Quantity)
             {
                 ++cartItem.Quantity;
+                TempData["success"] = "Tăng số lượng sản phầm thành công";
+
             }
             else
             {
-                cart.RemoveAll(c => c.ProductId == Id);
+                cartItem.Quantity = product.Quantity;
+                TempData["success"] = "Số lượng đã đặt đến giới hạn";
+
+
             }
             if (cart.Count == 0)
             {

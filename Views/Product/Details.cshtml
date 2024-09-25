@@ -61,9 +61,18 @@
                         <span>@Model.Price.ToString("#,##0 VNĐ")</span>
                         <label>Số lượng: </label>
                         <input type="number" id="quantityInput" value="1" min="1" step="1" oninput="validateQuantity(this)" />
+                        @if (@Model.Quantity > 0)
+                        {
                         <button class="btn btn-default add-to-cart" data-product_id="@Model.Id">
                             <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
-                        </button>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-default">
+                                <i class="fa fa-shopping-cart"></i>Hết hàng
+                            </button>
+                        }
                     </span>
                     <p><b>Tình trạng:</b> Còn hàng</p>
                     <p><b>Điều kiện:</b> Mới</p>
