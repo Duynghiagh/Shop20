@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProductDetailsViewModel
+@{
     ViewData["Title"] = "Chi tiết sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -50,20 +51,20 @@
             <!-- Chi tiết sản phẩm -->
             <div class="col-sm-5">
                 <div class="view-product">
-                    <img src="~/media/products/@Model.Image" alt="" width="100px" height="200px" />
+                    <img src="~/media/products/@Model.ProductDetails.Image" alt="" width="100px" height="200px" />
                 </div>
             </div>
             <div class="col-sm-7">
                 <div class="product-information">
                     <!-- Thông tin sản phẩm -->
-                    <h2>@Model.Name</h2>
+                    <h2>@Model.ProductDetails.Name</h2>
                     <span>
-                        <span>@Model.Price.ToString("#,##0 VNĐ")</span>
+                        <span>@Model.ProductDetails.Price.ToString("#,##0 VNĐ")</span>
                         <label>Số lượng: </label>
                         <input type="number" id="quantityInput" value="1" min="1" step="1" oninput="validateQuantity(this)" />
-                        @if (@Model.Quantity > 0)
+                        @if (@Model.ProductDetails.Quantity > 0)
                         {
-                        <button class="btn btn-default add-to-cart" data-product_id="@Model.Id">
+                            <button class="btn btn-default add-to-cart" data-product_id="@Model..ProductDetails.Id">
                             <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
                             </button>
                         }
@@ -76,8 +77,8 @@
                     </span>
                     <p><b>Tình trạng:</b> Còn hàng</p>
                     <p><b>Điều kiện:</b> Mới</p>
-                    <p><b>Thương hiệu:</b> @Model.Brand.Name</p>
-                    <p><b>Danh mục:</b> @Model.Category.Name</p>
+                    <p><b>Thương hiệu:</b> @Model.ProductDetails.Brand.Name</p>
+                    <p><b>Danh mục:</b> @Model.ProductDetails.Category.Name</p>
                 </div><!--/product-information-->
             </div>
         </div><!--/product-details-->
@@ -86,31 +87,38 @@
             <!-- Tab danh mục -->
             <div class="col-sm-12">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#details" data-toggle="tab">Chi tiết</a></li>
-                    <li><a href="#reviews" data-toggle="tab">Đánh giá (5)</a></li>
+                    <li ><a href="#details" data-toggle="tab">Chi tiết</a></li>
+                    <li class="active"><a href="#reviews" data-toggle="tab">Đánh giá (5)</a></li>
                 </ul>
             </div>
 
             <div class="tab-content">
                 <!-- Tab Chi tiết -->
-                <div class="tab-pane fade active in" id="details">
-                    @Html.Raw(Model.Description)
+                <div class="tab-pane fade" id="details">
+                    @Html.Raw(Model.ProductDetails.Description)
                 </div>
 
                 <!-- Tab Đánh giá -->
-                <div class="tab-pane fade" id="reviews">
+                <div class="tab-pane fade active in" id="reviews">
                     <div class="col-sm-12">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <p>.</p>
                         <p><b>Viết đánh giá của bạn</b></p>
 
-                        <form action="#">
+                        <form autocomplete="off" asp-action="CommentProduct" asp-controller="Product" method="POST">
                             <span>
-                                <input type="text" placeholder="Tên của bạn" />
-                                <input type="email" placeholder="Địa chỉ email" />
+                                <input asp-for="@Model.ProductDetails.Id" name="ProductId" type="hidden" />
+                                <input name="Star" type="hidden" value="4" />
+                                <input asp-for="@Model.Name" type="text" placeholder="Tên của bạn" />
+                                <span asp-validation-for="@Model.Name" class="text-danger"></span>  
+                                <input asp-for="@Model.Email"  type="email" placeholder="Địa chỉ email" />
+                                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
                             </span>
-                            <textarea name=""></textarea>
+                            <textarea asp-for="@Model.Comment"  name="Comment"></textarea>
+                            <span asp-validation-for="@Model.Comment" class="text-danger"></span>
+
                             <b>Đánh giá: </b> <img src="images/product-details/rating.png" alt="" />
-                            <button type="button" class="btn btn-default pull-right">
+                            <button type="submit" class="btn btn-default pull-right">
                                 Gửi
                             </button>
                         </form>

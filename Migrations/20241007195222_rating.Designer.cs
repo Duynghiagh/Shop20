@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoppingDemo.Repository;
 
@@ -11,9 +12,11 @@ using ShoppingDemo.Repository;
 namespace ShoppingDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241007195222_rating")]
+    partial class rating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -439,9 +442,6 @@ namespace ShoppingDemo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -453,13 +453,12 @@ namespace ShoppingDemo.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Star")
+                    b.Property<string>("Rating")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ratingModels");
                 });
@@ -607,8 +606,8 @@ namespace ShoppingDemo.Migrations
             modelBuilder.Entity("ShoppingDemo.Models.RatingModel", b =>
                 {
                     b.HasOne("ShoppingDemo.Models.ProductModel", "Product")
-                        .WithOne("Rating")
-                        .HasForeignKey("ShoppingDemo.Models.RatingModel", "ProductId")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -624,11 +623,6 @@ namespace ShoppingDemo.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ShoppingDemo.Models.ProductModel", b =>
-                {
-                    b.Navigation("Rating");
                 });
 #pragma warning restore 612, 618
         }

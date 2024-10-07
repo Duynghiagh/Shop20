@@ -1,0 +1,10 @@
+﻿@model IEnumerable<ShoppingDemo.Models.RatingModel>
+
+@foreach (var review in Model.OrderByDescending(r => r.CreatedAt))
+{
+    <div class="review-item">
+        <p><strong>@review.Name</strong> - @review.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+        <p>Đánh giá: @review.Star sao</p>
+        <p>@review.Comment</p>
+    </div>
+}
