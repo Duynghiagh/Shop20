@@ -9,12 +9,12 @@
                 <table class="table table-condensed">
                     <thead>
                         <tr class="cart_menu">
-                            <td class="image">Ảnh</td>
-                            <td class="description">Tên</td>
-                            <td class="price">Giá</td>
-                            <td class="quantity">Số lượng</td>
-                            <td class="total">Tổng cộng</td>
-                            <td></td>
+                            <th class="image">Ảnh</th>
+                            <th class="description">Tên</th>
+                            <th class="price">Giá</th>
+                            <th class="quantity">Số lượng</th>
+                            <th class="total">Tổng cộng</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,7 +24,7 @@
                             {
                                 <tr>
                                     <td class="cart_product">
-                                        <a><img src="~/media/products/@item.Image" alt="" height="50"></a>
+                                        <a><img src="~/media/products/@item.Image" alt="@item.ProductName" height="50"></a>
                                     </td>
                                     <td class="cart_description">
                                         <h4><a href="@Url.Action("Details", "Product", new { id = item.ProductId })">@item.ProductName</a></h4>
@@ -33,35 +33,76 @@
                                         <p>@item.Price.ToString("#,##0 VNĐ")</p>
                                     </td>
                                     <td class="cart_quantity">
-                                        <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+ </a>
-                                        <input class="cart_quantity_input" type="number" name="cartItems[@item.ProductId]" value="@item.Quantity" min="1" step="1" autocomplete="off">
-                                        <a class="btn btn-success btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">- </a>
-                                        <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa </a>
+                                        <div class="input-group">
+                                            <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+</a>
+                                            <input class="cart_quantity_input form-control" type="number" name="cartItems[@item.ProductId]" value="@item.Quantity" min="1" step="1" autocomplete="off">
+                                            <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
+                                        </div>
+                                        <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa</a>
                                     </td>
                                     <td class="cart_total">
-                                        <p class="cart_total_price">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,##0 VNĐ")</p>
+                                        <p class="cart_total_price">@((item.Quantity * item.Price).ToString("#,##0 VNĐ"))</p>
                                     </td>
                                 </tr>
                             }
                             <tr>
-                                <td colspan="6">
+                                <td colspan="6" class="text-right">
                                     <button type="submit" class="btn btn-primary">Cập nhật số lượng</button>
                                 </td>
                             </tr>
                             <tr>
                                 @if (User.Identity?.IsAuthenticated ?? false)
                                 {
-                                    <td><a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a> </td>
+                                    <td colspan="6" class="text-right">
+                                        @if (@Model.ShippingCost <= 0)
+                                        {
+                                            <a class="btn btn-primary btn-sm" disabled>Đặt hàng</a>
+                                            <span class="text-danger">Yêu cầu tính phí vận chuyển trước khi đặt hàng</span>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a>
+                                        }
+                                    </td>
                                 }
                             </tr>
-                            <tr rowspan="6">
-                                <td colspan="6"> Tổng tiền: <p class="cart_total_price">@Model.GrandTotal.ToString("#,##0 VNĐ")</p></td>
+                            <tr>
+                                <td colspan="6">
+                                    Tổng tiền: <strong>@Model.GrandTotal.ToString("#,##0 VNĐ")</strong><br />
+                                    Phí ship: <strong>@Model.ShippingCost.ToString("#,##0 VNĐ")</strong><br />
+                                    <p><a class="btn btn-danger btn-sm" asp-action="DeleteShipping" asp-controller="Cart">Xóa phí vận chuyển</a></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Chọn Tỉnh</label>
+                                            <select class="form-control" id="tinh" name="tinh">
+                                                <option value="0">Tỉnh Thành</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Chọn Quận</label>
+                                            <select class="form-control" id="quan" name="quan">
+                                                <option value="0">Quận Huyện</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Chọn Phường</label>
+                                            <select class="form-control" id="phuong" name="phuong">
+                                                <option value="0">Phường Xã</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-default btn-add-shipping mt-3">Tính phí ship</button>
+                                </td>
                             </tr>
                         }
                         else
                         {
                             <tr>
-                                <td colspan="6">
+                                <td colspan="6" class="text-center">
                                     <h4>Giỏ hàng của bạn đang trống</h4>
                                 </td>
                             </tr>
@@ -71,23 +112,93 @@
             </div>
         </form>
     </div>
-</section> <!--/#cart_items-->
-@section Scripts{
+</section>
+@section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.cart_quantity_input').forEach(input => {
                 input.addEventListener('input', (e) => {
-                    // Loại bỏ tất cả các ký tự không phải là số và không phải là dấu phân cách
                     e.target.value = e.target.value.replace(/[^0-9]/g, '');
-
-                    // Nếu giá trị nhỏ hơn 1, đặt lại giá trị về 1
                     if (e.target.value < 1) {
                         e.target.value = 1;
                     }
                 });
             });
         });
+
     </script>
+    <script>
+            $(document).ready(function () {
+                // Lấy danh sách tỉnh thành
+                $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+                    if (data_tinh.error == 0) {
+                        $.each(data_tinh.data, function (key_tinh, val_tinh) {
+                            $("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+                        });
 
+                        $("#tinh").change(function () {
+                            var idtinh = $(this).val();
+                            // Lấy danh sách quận huyện theo tỉnh
+                            $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+                                if (data_quan.error == 0) {
+                                    $("#quan").html('<option value="0">Quận Huyện</option>');
+                                    $("#phuong").html('<option value="0">Phường Xã</option>');
+                                    $.each(data_quan.data, function (key_quan, val_quan) {
+                                        $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                                    });
 
+                                    $("#quan").change(function () {
+                                        var idquan = $(this).val();
+                                        // Lấy danh sách phường xã theo quận huyện
+                                        $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+                                            if (data_phuong.error == 0) {
+                                                $("#phuong").html('<option value="0">Phường Xã</option>');
+                                                $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                                                    $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+
+                // Khi bấm vào nút "Tính phí ship"
+                $(".btn-add-shipping").click(function () {
+                    var tinh = $("#tinh").val();
+                    var quan = $("#quan").val();
+                    var phuong = $("#phuong").val();
+
+                    // Hiển thị các giá trị trong console để kiểm tra
+                    console.log("Tỉnh:", tinh);
+                    console.log("Quận:", quan);
+                    console.log("Phường:", phuong);
+
+                    // Kiểm tra nếu chưa chọn đầy đủ thông tin
+                    if (tinh === "0" || quan === "0" || phuong === "0") {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Thiếu thông tin!',
+                            text: 'Vui lòng chọn đầy đủ Tỉnh Thành, Quận Huyện, và Phường Xã.'
+                        });
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("GetShipping", "Cart")",
+                            data: { tinh: tinh, quan: quan, phuong: phuong },
+                            success: function (result) {
+                                if (result) {
+                                    location.reload();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire("Có lỗi xảy ra: " + xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+    </script>
 }

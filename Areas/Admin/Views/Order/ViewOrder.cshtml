@@ -6,7 +6,7 @@
 }
 <h1>Chi Tiết Đơn hàng</h1>
 <a asp-action="Index">Quay lại danh sách</a>
-<table class="table"id="detail_order">
+<table class="table table-striped" id="detail_order">
     <thead>
         <tr>
 
@@ -40,18 +40,23 @@
            <td></td>
            <td></td>
            <td></td>
-            <td>@total.ToString("#,##0 VNĐ")</td>
-           
-            <td class="text-end">
-                <select class="form-control select-update-order">
-                    <option value="">Chọn trạng thái</option>
-                    <option value="1">Đơn hàng mới</option>
-                    <option value="0">Đã xử lý</option>
-                </select>
+            <td>@total.ToString("#,##0 VNĐ")
+            <td>
+                Phí Ship:@ViewBag.ShippingCost.ToString("#,##0 VNĐ")
             </td>
+            </td>
+           
+           
         </tr>
     </tbody>    
 </table>
+<td class="text-end">
+    <select class="form-control select-update-order">
+        <option value="">Chọn trạng thái</option>
+        <option value="1">Đơn hàng mới</option>
+        <option value="0">Đã xử lý</option>
+    </select>
+</td>
 @section Scripts {
     <script>
          new DataTable('#detail_order', {

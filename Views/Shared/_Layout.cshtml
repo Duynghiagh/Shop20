@@ -44,7 +44,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
                             <ul class="nav navbar-nav">
                                 <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart"></i> Giỏ Hàng</a></li>
                                 @if (User.Identity?.IsAuthenticated ?? false)
-                                {
+                                { 
                                     <li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock"></i> Chào, @User.Identity.Name, Đăng Xuất</a></li>
                                     @if (User.IsInRole("Admin"))
                                     {
