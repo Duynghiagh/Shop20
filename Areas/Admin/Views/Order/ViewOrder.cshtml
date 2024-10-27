@@ -1,80 +1,95 @@
 ﻿@model IEnumerable<OrderDetails>
 @{
-    ViewData["title"] = "Chi Tiết Đơn hàng";
+    ViewData["Title"] = "Chi Tiết Đơn hàng";
     decimal total = 0;
     decimal subtotal = 0;
 }
-<h1>Chi Tiết Đơn hàng</h1>
-<a asp-action="Index">Quay lại danh sách</a>
-<table class="table table-striped" id="detail_order">
-    <thead>
-        <tr>
 
-            <th scope="col">Id</th>
-            <th scope="col">Tên người dùng</th>
-            <th scope="col">Tên sản phẩm</th>
-            <th scope="col">Giá sản phẩm</th>
-            <th scope="col">Số lượng</th>
-            <th scope="col">Tổng phụ</th>
+<h1 class="text-center mb-4">Chi Tiết Đơn hàng</h1>
+<a asp-action="Index" class="btn btn-secondary mb-3">Quay lại danh sách</a>
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            subtotal = item.Quantity * item.Price;
-            total += subtotal;
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="detail_order">
+        <thead class="thead-dark">
             <tr>
-                <input type="hidden" asp-for="@item.OrderCode" class="getId" />
-                <td>@item.Id</td>
-                <td>@item.UserName</td>
-                <td>@item.Product.Name</td>
-                <td>@item.Price</td>
-                <td>@item.Quantity</td>
-                <td>@subtotal.ToString("#,##0 VNĐ")</td>
+                <th scope="col">Id</th>
+                <th scope="col">Tên người dùng</th>
+                <th scope="col">Tên sản phẩm</th>
+                <th scope="col">Giá sản phẩm</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col" class="text-end">Tổng phụ</th>
             </tr>
-        }
-        <tr>
-           
-           <td>Tổng Cộng:</td>
-           <td></td>
-           <td></td>
-           <td></td>
-            <td>@total.ToString("#,##0 VNĐ")
-            <td>
-                Phí Ship:@ViewBag.ShippingCost.ToString("#,##0 VNĐ")
-            </td>
-            </td>
-           
-           
-        </tr>
-    </tbody>    
-</table>
-<td class="text-end">
-    <select class="form-control select-update-order">
-        <option value="">Chọn trạng thái</option>
-        <option value="1">Đơn hàng mới</option>
-        <option value="0">Đã xử lý</option>
-    </select>
-</td>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                subtotal = item.Quantity * item.Price;
+                total += subtotal;
+                <tr>
+                    <input type="hidden" asp-for="@item.OrderCode" class="getId" />
+                    <td>@item.Id</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Price.ToString("#,##0 VNĐ")</td>
+                    <td>@item.Quantity</td>
+                    <td class="text-end">@subtotal.ToString("#,##0 VNĐ")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><strong>Tổng Cộng:</strong></td>
+                <td colspan="3"></td>
+                <td class="text-end">
+                    <strong>@total.ToString("#,##0 VNĐ")</strong>
+                </td>
+                <td class="text-end">
+                    Phí Ship: <strong>@ViewBag.ShippingCost.ToString("#,##0 VNĐ")</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-end">
+                    @if (@ViewBag.Status != 3)
+                    {
+                        <select class="form-control select-update-order d-inline-block w-auto">
+                            <option value="">Chọn trạng thái</option>
+                            <option value="1">Đơn hàng mới</option>
+                            <option value="0">Đã xử lý</option>
+                        </select>
+                    }
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
 @section Scripts {
     <script>
-         new DataTable('#detail_order', {
-            layout: {
-                topStart: {
-                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-                }
-            }
-        });
-    </script>
-    <script>
         $(document).ready(function () {
+            // Khởi tạo DataTable
+            new DataTable('#detail_order', {
+                dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "language": {
+                    "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
+                    "zeroRecords": "Không tìm thấy kết quả",
+                    "info": "Trang _PAGE_ trên _PAGES_",
+                    "infoEmpty": "Không có bản ghi nào",
+                    "infoFiltered": "(lọc từ _MAX_ tổng số bản ghi)",
+                    "search": "Tìm kiếm:",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                }
+            });
+
+            // Cập nhật trạng thái đơn hàng
             $('.select-update-order').change(function () {
                 var status = $(this).val();
                 var ordercode = $('.getId').val();
-
-                console.log("Status: " + status); // Debug
-                console.log("OrderCode: " + ordercode); // Debug
 
                 $.ajax({
                     type: "POST",
@@ -82,22 +97,20 @@
                     data: { status: status, ordercode: ordercode },
                     success: function (result) {
                         if (result.success) {
-                            swal.fire("Cập nhật đơn hàng thành công")
+                            Swal.fire("Cập nhật đơn hàng thành công")
                                 .then(function () {
                                     window.location.href = '@Url.Action("Index", "Order")';
                                 });
                         } else {
-                            swal.fire("Cập nhật đơn hàng thất bại: " + result.message);
+                            Swal.fire("Cập nhật đơn hàng thất bại: " + result.message);
                         }
                     },
                     error: function () {
-                        swal.fire("Có lỗi xảy ra khi gửi yêu cầu");
+                        Swal.fire("Có lỗi xảy ra khi gửi yêu cầu");
                     }
                 });
             });
         });
-
     </script>
-
-
 }
+

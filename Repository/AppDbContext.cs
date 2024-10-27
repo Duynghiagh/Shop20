@@ -26,6 +26,7 @@ namespace ShoppingDemo.Repository
 		public DbSet<ProductQuantityModel> productQuantities{ get; set; }
 		public DbSet<RatingModel> ratingModels{ get; set; }
 		public DbSet<ShippingModel> Shippings {get; set; }
+		public DbSet<CounponModel> Counpons {get; set; }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlServer("Server=NGHIAFIN\\MSSQLSERVER1;Database=ShopCart;Trusted_Connection=True;TrustServerCertificate=True\r\n");

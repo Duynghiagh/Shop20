@@ -8,6 +8,7 @@
     <title>Trang chủ | F-gear</title>
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <link href="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
 " rel="stylesheet">
@@ -26,63 +27,114 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
         #slider-carousel .carousel-inner .item img {
             width: 200px; /* Điều chỉnh chiều rộng */
             height: auto; /* Giữ tỷ lệ ảnh */
+            /* Header trên cùng */
+            .header-top
+
+        {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        .header-top .shop-menu a {
+            color: #fff;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+            .header-top .shop-menu a:hover {
+                color: #ffcc00;
+            }
+
+        /* Header dưới cùng với menu chính */
+        .header-middle {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+            .header-middle .navbar-nav li a {
+                color: #333;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+                .header-middle .navbar-nav li a:hover {
+                    color: #ffcc00;
+                }
+
+        /* Search box */
+        .search_box {
+            display: flex;
+            gap: 5px;
+        }
+
+            .search_box input[type="text"] {
+                padding: 8px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                width: 100%;
+            }
+
+            .search_box button {
+                background-color: #ffcc00;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                color: #333;
+                font-weight: bold;
+            }
+
         }
     </style>
+
     </style>
 </head><!--/head-->
 
 <body>
     <header id="header">
-        <div class="header-middle">
-            <!--header-middle-->
+        <!-- Header trên cùng cho tài khoản và giỏ hàng -->
+        <div class="header-top">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-4">
-                    </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-12">
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
                                 <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart"></i> Giỏ Hàng</a></li>
                                 @if (User.Identity?.IsAuthenticated ?? false)
-                                { 
+                                {
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" style="cursor:pointer">
+                                            <i class="fa fa-user"></i> Tài Khoản <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a asp-controller="Account" asp-action="History">Lịch sử đặt hàng</a></li>
+                                            <li><a asp-controller="Account" asp-action="UpdateAccount">Cập nhật thông tin</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a asp-controller="Home" asp-action="Compare"><i class="fa fa-exchange"></i> So sánh</a></li>
+                                    <li><a asp-controller="Home" asp-action="Wishlist"><i class="fa fa-heart"></i> Yêu thích</a></li>
+                                    <li><a asp-controller="Account" asp-action="Profile"><i class="fa fa-user"></i> Thông tin</a></li>
                                     <li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock"></i> Chào, @User.Identity.Name, Đăng Xuất</a></li>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li><a asp-controller="Admin" asp-action="Index"><i class="fa fa-user"></i> Tài Khoản</a></li>
-                                        <li><a asp-controller="Home" asp-action="Compare"><i class="fa fa-user"></i> Compare</a></li>
-                                        <li><a asp-controller="Home" asp-action="Wishlist"><i class="fa fa-user"></i> Wishlist</a></li>
-                                   
-                                    }
-
                                 }
-                              
                                 else
                                 {
-                                    <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Đang Nhập</a></li>
+                                    <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Đăng Nhập</a></li>
                                 }
-                                <li><a asp-controller="Account" asp-action="Profile"><i class="fa fa-user"></i> Thông tin</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        </div><!--/header-middle-->
+        </div>
 
-        <div class="header-bottom">
-            <!--header-bottom-->
+        <!-- Header dưới cùng với menu chính và tìm kiếm -->
+        <div class="header-middle">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-9">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
                         <div class="mainmenu pull-left">
-                            <ul class="nav navbar-nav collapse navbar-collapse">
+                            <ul class="nav navbar-nav">
                                 <li><a asp-controller="Home" asp-action="Index" class="active">Trang Chủ</a></li>
                             </ul>
                         </div>
@@ -97,8 +149,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
                     </div>
                 </div>
             </div>
-        </div><!--/header-bottom-->
-    </header><!--/header-->
+        </div>
+    </header>
+
     <section id="slider">
         <!--slider-->
         <div class="container">
@@ -266,6 +319,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css
 
 
     <script src="~/js/jquery.js"></script>
+
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/jquery.scrollUp.min.js"></script>
     <script src="~/js/price-range.js"></script>

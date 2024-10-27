@@ -1,0 +1,115 @@
+﻿@model CounponModel
+@{
+    ViewData["Title"] = "Tạo mã giảm giá";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Tạo Mã Giảm Giá</h1>
+    <div class="col-md-8 offset-md-2">
+        <form asp-action="Create" autocomplete="off" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="form-group mb-4">
+                <label for="Name" class="form-label">Tên Mã Giảm Giá</label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label for="Description" class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label for="DateStart" class="form-label">Ngày Bắt Đầu</label>
+                <input asp-for="DateStart" type="date" class="form-control">
+                <span asp-validation-for="DateStart" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label for="DateExpired" class="form-label">Ngày Kết Thúc</label>
+                <input asp-for="DateExpired" type="date" class="form-control">
+                <span asp-validation-for="DateExpired" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label for="Status" class="form-label">Trạng Thái</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="1">Hiển thị</option>
+                    <option value="0">Ẩn</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4 text-center">
+                <button type="submit" class="btn btn-primary w-100">Tạo Mã Giảm Giá</button>
+            </div>
+        </form>
+
+        <div class="table-container mt-5">
+            <h3 class="text-center mb-3">Danh Sách Mã Giảm Giá</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Tên</th>
+                            <th scope="col">Mô tả</th>
+                            <th scope="col">Ngày Bắt Đầu</th>
+                            <th scope="col">Ngày Kết Thúc</th>
+                            <th scope="col">Số Lượng</th>
+                            <th scope="col">Trạng Thái</th>
+                            <th scope="col">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Counpons != null)
+                        {
+                            foreach (var coupon in ViewBag.Counpons)
+                            {
+                                <tr>
+                                    <td>@coupon.Name</td>
+                                    <td>@coupon.Description</td>
+                                    <td>@coupon.DateStart.ToString("dd-MM-yyyy")</td>
+                                    <td>@coupon.DateExpired.ToString("dd-MM-yyyy")</td>
+                                    <td>@coupon.Quantity</td>
+                                    <td>
+                                        @if (coupon.DateExpired < DateTime.Now)
+                                        {
+                                            <span class="badge badge-danger">Expired</span>
+                                        }
+                                        else
+                                        {
+                                            TimeSpan remainingTime = coupon.DateExpired - DateTime.Now;
+                                            int daysRemaining = remainingTime.Days;
+                                            @if (daysRemaining == 0)
+                                            {
+                                                <span class="badge badge-warning">Today</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-success">@daysRemaining days left</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        <select name="Status" class="form-control form-control-sm d-inline-block w-auto">
+                                            <option value="1" selected="@(coupon.Status == 1 ? "selected" : null)">Kích hoạt</option>
+                                            <option value="0" selected="@(coupon.Status == 0 ? "selected" : null)">Ẩn</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">Không có mã giảm giá nào được tìm thấy.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

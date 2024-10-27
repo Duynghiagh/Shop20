@@ -1,30 +1,88 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model IEnumerable<IdentityRole>
 @{
-    ViewData["title"] = "Danh sách quyền";
+    ViewData["Title"] = "Danh sách quyền";
 }
-<h1>Danh sách vai trò</h1>
-<a asp-action="Create" asp-controller="Role" class="btn btn-primary mb-3">Thêm quyền</a>
 
-<table class="table" id="myTable">
-    <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Tên quyền</th>
-            <th scope="col">Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<h1 class="text-center mb-4">Danh sách vai trò</h1>
+<div class="mb-3 text-right">
+    <a asp-action="Create" asp-controller="Role" class="btn btn-success">
+        <i class="fa fa-plus"></i> Thêm quyền
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="myTable">
+        <thead class="thead-dark">
             <tr>
-                <td>@item.Id</td>
-                <td>@item.Name</td>
-                <td>
-                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-controller="Role" asp-route-Id="@item.Id">Sửa</a>
-                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Role" asp-route-Id="@item.Id">Xóa</a>
-                </td>
+                <th scope="col" style="font-size: 1.1em;">Id</th>
+                <th scope="col" style="font-size: 1.1em;">Tên quyền</th>
+                <th scope="col" class="text-center" style="font-size: 1.1em;">Hành động</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="font-size: 1.1em;">@item.Id</td>
+                    <td style="font-size: 1.1em;">@item.Name</td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-controller="Role" asp-route-Id="@item.Id" class="btn btn-sm btn-warning">
+                            <i class="fa fa-edit"></i> Sửa
+                        </a>
+                        <a asp-action="Delete" asp-controller="Role" asp-route-Id="@item.Id" class="btn btn-sm btn-danger confirmDeletion">
+                            <i class="fa fa-trash"></i> Xóa
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Khởi tạo DataTable
+            if (!$.fn.DataTable.isDataTable('#myTable')) {
+                $('#myTable').DataTable({
+                    "language": {
+                        "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
+                        "zeroRecords": "Không tìm thấy kết quả",
+                        "info": "Trang _PAGE_ trên _PAGES_",
+                        "infoEmpty": "Không có bản ghi nào",
+                        "infoFiltered": "(lọc từ _MAX_ tổng số bản ghi)",
+                        "search": "Tìm kiếm:",
+                        "paginate": {
+                            "first": "Đầu",
+                            "last": "Cuối",
+                            "next": "Tiếp",
+                            "previous": "Trước"
+                        },
+                    }
+                });
+            }
+
+            // Xác nhận trước khi xóa
+            $(document).on('click', '.confirmDeletion', function (e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa?',
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+}
+

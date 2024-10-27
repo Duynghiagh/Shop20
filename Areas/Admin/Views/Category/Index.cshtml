@@ -1,53 +1,60 @@
 ﻿@model IEnumerable<CategoryModel>
 @{
-    ViewData["title"] = "Danh sách Danh mục";
-    Paginate pager = new Paginate();
-    int pageNo = 0;
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-        pageNo = pager.CurrentPage;
-    }
+    ViewData["Title"] = "Danh sách Danh mục";
+    Paginate pager = ViewBag.Pager ?? new Paginate();
+    int pageNo = pager.CurrentPage;
 }
-<h1>Danh sách Danh mục</h1>
-<a asp-action="Create" asp-controller="Category">Thêm Danh mục</a>
 
-<table class="table" id="myTable">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tên Danh mục</th>
-            <th scope="col">Mô tả Danh mục</th>
-            <th scope="col">Đường dẫn Danh mục</th>
-            <th scope="col">Trạng thái Danh mục</th>
-            <th scope="col">Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<h1 class="mb-4">Danh sách Danh mục</h1>
+<a asp-action="Create" asp-controller="Category" class="btn btn-primary mb-3">Thêm Danh mục</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped" id="categoryTable">
+        <thead class="thead-dark">
             <tr>
-                <th scope="row">@item.Id</th>
-                <td>@item.Name</td>
-                <td>@Html.Raw(@item.Description)</td>
-                <td>@item.Slug</td>
-                <td>
-                    @if (@item.Status == 1)
-                    {
-                        <span class="text text-success">Hiển thị</span>
-                    }
-                    else
-                    {
-                        <span class="text text-danger">Ẩn</span>
-                    }
-                </td>
-
-                <td>
-                    <a asp-action="Edit" class="btn btn-warning btn-sm" asp-controller="Category" asp-route-Id="@item.Id">Sửa</a>
-                    <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="Category" asp-route-Id="@item.Id">Xóa</a>
-                </td>
+                <th scope="col" style="width: 5%;">#</th>
+                <th scope="col" style="width: 20%; font-size: 1.1em;">Tên Danh mục</th>
+                <th scope="col" style="width: 30%;">Mô tả Danh mục</th>
+                <th scope="col" style="width: 15%;">Đường dẫn Danh mục</th>
+                <th scope="col" style="width: 10%;">Trạng thái Danh mục</th>
+                <th scope="col" style="width: 20%;">Hành động</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@item.Id</th>
+                        <td>@item.Name</td>
+                        <td>@Html.Raw(item.Description)</td>
+                        <td>@item.Slug</td>
+                        <td>
+                            @if (item.Status == 1)
+                            {
+                                <span class="badge badge-success">Hiển thị</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-danger">Ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="Category" asp-route-Id="@item.Id" class="btn btn-sm btn-warning mr-1">Sửa</a>
+                            <a asp-action="Delete" asp-controller="Category" asp-route-Id="@item.Id" class="btn btn-sm btn-danger confirmDeletion">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">Không có danh mục nào được tìm thấy.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 <partial name="_paging" model="@pager" />

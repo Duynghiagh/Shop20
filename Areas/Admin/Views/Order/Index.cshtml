@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<OrderModel>
 @{
-    ViewData["title"] = "Danh Sách Đơn hàng";
+    ViewData["Title"] = "Danh Sách Đơn hàng";
     Paginate pager = new Paginate();
     int pageNo = 0;
     if (ViewBag.Pager != null)
@@ -9,61 +9,74 @@
         pageNo = pager.CurrentPage;
     }
 }
-<h1>Danh Sách Đơn hàng</h1>
-<table class="table " id="detail_order">
-    <thead>
-        <tr>
-            <th scope="col">Mã Đơn hàng</th>
-            <th scope="col">Phí ship</th>
-            <th scope="col">Tên người dùng</th>
-            <th scope="col">Ngày đặt hàng</th>
-            <th scope="col">Trạng thái đơn hàng</th>
-            <th scope="col">Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+
+<h1 class="text-center mb-4">Danh Sách Đơn hàng</h1>
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="detail_order">
+        <thead class="thead-dark">
             <tr>
-                <th scope="row">@item.OrderCode</th>
-                <th scope="row">@item.ShippingCost.ToString("#,##0 VNĐ")</th>
-                <td>@item.UserName</td>
-                <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                <td>
-                    @if (@item.Status == 1)
-                    {
-                        <span class="text text-success">Đơn hàng mới</span>
-                    }
-                    else
-                    {
-                        <span class="text text-danger">Đơn hàng thành công</span>
-                    }
-                </td>
-
-                <td>
-                    <a asp-action="ViewOrder" class="btn btn-warning btn-sm" asp-controller="Order" asp-route-ordercode="@item.OrderCode">Xem</a>
-                    <form asp-action="DeleteOrder" asp-controller="Order" asp-route-ordercode="@item.OrderCode" method="post">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                    </form>
-
-
-                </td>
+                <th scope="col">Mã Đơn hàng</th>
+                <th scope="col">Phí ship</th>
+                <th scope="col">Coupon Code</th>
+                <th scope="col">Tên người dùng</th>
+                <th scope="col">Ngày đặt hàng</th>
+                <th scope="col">Trạng thái đơn hàng</th>
+                <th scope="col" class="text-center">Hành động</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.OrderCode</td>
+                    <td>@item.ShippingCost.ToString("#,##0 VNĐ")</td>
+                    <td>@item.CouponCode</td>
+                    <td>@item.UserName</td>
+                    <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td>
+                        @if (item.Status == 1)
+                        {
+                            <span class="text text-success">Đơn hàng mới</span>
+                        }
+                        else if (item.Status == 2)
+                        {
+                            <span class="text text-primary">Đã xử lý</span>
+                        }
+                        else
+                        {
+                            <span class="text text-danger">Đã hủy</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="ViewOrder" asp-controller="Order" asp-route-ordercode="@item.OrderCode" class="btn btn-sm btn-info">
+                            <i class="fa fa-eye"></i> Xem
+                        </a>
+                        <form asp-action="DeleteOrder" asp-controller="Order" asp-route-ordercode="@item.OrderCode" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger confirmDeletion">
+                                <i class="fa fa-trash"></i> Xóa
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 <partial name="_paging" model="@pager" />
+
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Khởi tạo DataTable
             $('#detail_order').DataTable({
                 dom: 'Bfrtip',
                 buttons: [
                     {
                         extend: 'copy',
                         exportOptions: {
-                            columns: ':not(:last-child)' // Ẩn cột cuối cùng (cột Hành động) khi xuất
+                            columns: ':not(:last-child)'
                         }
                     },
                     {
@@ -84,8 +97,43 @@
                             columns: ':not(:last-child)'
                         }
                     }
-                ]
+                ],
+                "language": {
+                    "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
+                    "zeroRecords": "Không tìm thấy kết quả",
+                    "info": "Trang _PAGE_ trên _PAGES_",
+                    "infoEmpty": "Không có bản ghi nào",
+                    "infoFiltered": "(lọc từ _MAX_ tổng số bản ghi)",
+                    "search": "Tìm kiếm:",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                }
+            });
+
+            // Xác nhận trước khi xóa
+            $(document).on('click', '.confirmDeletion', function (e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa?',
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     </script>
 }
+

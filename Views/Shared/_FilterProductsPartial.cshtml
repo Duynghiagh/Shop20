@@ -1,0 +1,67 @@
+﻿<style>
+    .col-md-5 {
+        max-width: 300px; /* Giới hạn chiều rộng của cột lọc */
+    }
+
+    #slider-range {
+        margin-top: 20px;
+        width: 100%; /* Đảm bảo thanh trượt chiếm toàn bộ chiều rộng */
+    }
+
+    #amount {
+        font-size: 100%;
+        color: #f6931f;
+        font-weight: bold;
+    }
+
+    .btn-locgia {
+        font-size: 100%;
+        padding: 5px 10px;
+        margin-top: 10px;
+    }
+
+    .container h5 {
+        font-size: 20px;
+    }
+
+    .form-control {
+        font-size: 12px;
+        padding: 4px;
+    }
+
+    /* Tùy chỉnh cho khoảng giá */
+    #amount {
+        font-size: 13px; /* Giảm kích thước font cho khoảng giá */
+        color: #f6931f;
+        font-weight: bold;
+    }
+</style>
+
+@{
+    var currenUrl = Url.ActionContext.HttpContext.Request.Path;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <h5>Sắp xếp theo</h5>
+            <select class="form-control" id="sort_by">
+                <option>----------------</option>
+                <option value="@currenUrl?sort_by=price_increase">Giá tăng dần</option>
+                <option value="@currenUrl?sort_by=price_decrease">Giá giảm dần</option>
+                <option value="@currenUrl?sort_by=price_newest">Mới nhất</option>
+                <option value="@currenUrl?sort_by=price_oldest">Cũ nhất</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <h5>Lọc theo giá</h5>
+            <form asp-action="Index" asp-controller="Category">
+                <p>
+                    <label for="amount">Khoảng giá</label>
+                    <input type="text" id="amount" readonly="" style="border:0; color:#f6931f; font-weight:bold;">
+                </p>
+                <div id="slider-range"></div>
+                <button type="submit" name="locgia" data-current_url="@currenUrl" class="btn btn-danger btn-locgia">Lọc</button>
+            </form>
+        </div>
+    </div>
+</div>

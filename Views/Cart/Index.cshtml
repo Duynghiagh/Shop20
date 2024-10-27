@@ -1,20 +1,19 @@
 ﻿@using ShoppingDemo.Models.ViewModels
 @model CartItemViewModel
-
-<h4>Giỏ hàng</h4>
+<h4 class="text-center">Giỏ hàng của bạn</h4>
 <section id="cart_items">
     <div class="container">
         <form asp-action="UpdateQuantity" method="post">
             <div class="table-responsive cart_info">
-                <table class="table table-condensed">
+                <table class="table table-bordered">
                     <thead>
                         <tr class="cart_menu">
-                            <th class="image">Ảnh</th>
-                            <th class="description">Tên</th>
-                            <th class="price">Giá</th>
-                            <th class="quantity">Số lượng</th>
-                            <th class="total">Tổng cộng</th>
-                            <th></th>
+                            <th class="text-center">Ảnh</th>
+                            <th class="text-center">Tên sản phẩm</th>
+                            <th class="text-center">Giá</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-center">Tổng cộng</th>
+                            <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,25 +22,23 @@
                             @foreach (var item in Model.CartItems)
                             {
                                 <tr>
-                                    <td class="cart_product">
-                                        <a><img src="~/media/products/@item.Image" alt="@item.ProductName" height="50"></a>
+                                    <td class="text-center align-middle">
+                                        <img src="~/media/products/@item.Image" alt="@item.ProductName" class="img-fluid rounded" style="width: 80px; height: 80px; object-fit: cover;">
                                     </td>
-                                    <td class="cart_description">
-                                        <h4><a href="@Url.Action("Details", "Product", new { id = item.ProductId })">@item.ProductName</a></h4>
+                                    <td class="text-center align-middle">
+                                        <h5><a href="@Url.Action("Details", "Product", new { id = item.ProductId })">@item.ProductName</a></h5>
                                     </td>
-                                    <td class="cart_price">
-                                        <p>@item.Price.ToString("#,##0 VNĐ")</p>
-                                    </td>
-                                    <td class="cart_quantity">
-                                        <div class="input-group">
-                                            <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+</a>
-                                            <input class="cart_quantity_input form-control" type="number" name="cartItems[@item.ProductId]" value="@item.Quantity" min="1" step="1" autocomplete="off">
-                                            <a class="btn btn-default btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
+                                    <td class="text-center align-middle">@item.Price.ToString("#,##0 VNĐ")</td>
+                                    <td class="text-center align-middle">
+                                        <div class="input-group justify-content-center">
+                                            <a class="btn btn-outline-secondary btn-sm" asp-controller="Cart" asp-action="Decrease" asp-route-id="@item.ProductId">-</a>
+                                            <input type="number" name="cartItems[@item.ProductId]" value="@item.Quantity" min="1" step="1" class="form-control text-center" style="width: 60px;">
+                                            <a class="btn btn-outline-secondary btn-sm" asp-controller="Cart" asp-action="Increase" asp-route-id="@item.ProductId">+</a>
                                         </div>
-                                        <a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa</a>
                                     </td>
-                                    <td class="cart_total">
-                                        <p class="cart_total_price">@((item.Quantity * item.Price).ToString("#,##0 VNĐ"))</p>
+                                    <td class="text-center align-middle">@((item.Quantity * item.Price).ToString("#,##0 VNĐ"))</td>
+                                    <td class="text-center align-middle">
+                                        <a class="btn btn-outline-danger btn-sm" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">Xóa</a>
                                     </td>
                                 </tr>
                             }
@@ -56,40 +53,47 @@
                                     <td colspan="6" class="text-right">
                                         @if (@Model.ShippingCost <= 0)
                                         {
-                                            <a class="btn btn-primary btn-sm" disabled>Đặt hàng</a>
+                                            <a disabled="disabled" class="btn btn-primary btn-sm" onclick="return confirm('Xác nhận đặt hàng')" asp-action="Checkout" asp-controller="Checkout">Đặt hàng</a>
                                             <span class="text-danger">Yêu cầu tính phí vận chuyển trước khi đặt hàng</span>
                                         }
                                         else
                                         {
-                                            <a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a>
+                                            <a class="btn btn-primary btn-sm" onclick="return confirm('Xác nhận đặt hàng')" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a>
                                         }
                                     </td>
                                 }
                             </tr>
                             <tr>
                                 <td colspan="6">
-                                    Tổng tiền: <strong>@Model.GrandTotal.ToString("#,##0 VNĐ")</strong><br />
-                                    Phí ship: <strong>@Model.ShippingCost.ToString("#,##0 VNĐ")</strong><br />
-                                    <p><a class="btn btn-danger btn-sm" asp-action="DeleteShipping" asp-controller="Cart">Xóa phí vận chuyển</a></p>
+                                    <strong>Tổng tiền: </strong>@Model.GrandTotal.ToString("#,##0 VNĐ")<br />
+                                    <form>
+                                        <label for="coupon">Coupon Code:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control coupon-value" id="coupon" placeholder="Nhập mã giảm giá" />
+                                            <button type="button" class="btn btn-primary btn-apply-coupon">Áp dụng</button>
+                                        </div>
+                                        <p>Phí ship: <strong>@Model.ShippingCost.ToString("#,##0 VNĐ")</strong></p>
+                                        <a class="btn btn-danger btn-sm" asp-action="DeleteShipping" asp-controller="Cart">Xóa phí vận chuyển</a>
+                                    </form>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="6">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <label>Chọn Tỉnh</label>
+                                            <label for="tinh">Chọn Tỉnh</label>
                                             <select class="form-control" id="tinh" name="tinh">
                                                 <option value="0">Tỉnh Thành</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4">
-                                            <label>Chọn Quận</label>
+                                            <label for="quan">Chọn Quận</label>
                                             <select class="form-control" id="quan" name="quan">
                                                 <option value="0">Quận Huyện</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4">
-                                            <label>Chọn Phường</label>
+                                            <label for="phuong">Chọn Phường</label>
                                             <select class="form-control" id="phuong" name="phuong">
                                                 <option value="0">Phường Xã</option>
                                             </select>
@@ -113,7 +117,29 @@
         </form>
     </div>
 </section>
+
+
 @section Scripts {
+    <script>
+        $('.btn-apply-coupon').click(function () {
+            var coupon_value = $('.coupon-value').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetCoupon", "Cart")",
+                data: { coupon_value: coupon_value },
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire(result.message);
+                        location.reload();
+                    } else {
+                        Swal.fire(result.message);
+                    }
+                }
+            });
+        });
+    </script>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.cart_quantity_input').forEach(input => {

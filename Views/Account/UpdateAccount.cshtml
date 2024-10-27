@@ -1,0 +1,36 @@
+﻿@model AppUserModel
+@{
+    ViewData["Title"] = "Cập nhật thông tin";
+}
+<h2>Cập nhật thông tin</h2>
+<div class="col-md-9">
+    <form asp-action="UpdateInfoAccount" asp-controller="Account" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input asp-for="UserName" readonly  required class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" readonly required class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input asp-for="PhoneNumber" required class="form-control">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-default">Cập nhật</button>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

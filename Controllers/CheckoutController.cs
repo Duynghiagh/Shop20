@@ -31,12 +31,16 @@ namespace ShoppingDemo.Controllers
 				orderItem.OrderCode = orderCode;
                 var shippingPriceCookie = Request.Cookies["ShippingPrice"];
                 decimal shippingPrice = 0;
+                //nhan coupon for cookie
+                var coupon_code = Request.Cookies["CouponTitle"];
+
                 if (shippingPriceCookie != null)
                 {
                     var shippingPriceJson = shippingPriceCookie;
                     shippingPrice = JsonConvert.DeserializeObject<decimal>(shippingPriceJson);
                 }
 				orderItem.ShippingCost = shippingPrice;
+				orderItem.CouponCode = coupon_code;
 
                 orderItem.UserName = userEmail;
 				orderItem.Status = 1;
@@ -65,10 +69,10 @@ namespace ShoppingDemo.Controllers
 				//Send mail order when success
 				var receiver = userEmail;
 				var subject = "Đặt hàng thành công";
-				var message = "Đặt hàng thành công, trải nghiệm dịch vụ";
+				var message = "Đặt hàng thành công, trải nghiệm dịch vụ nhé";
 				await _emailSender.SenEmailAsync(receiver, subject, message);
 				TempData["success"] = "Đơn hàng đã được tạo, vui long chờ duyệt đơn hàng";
-				return RedirectToAction("Index", "Cart");
+				return RedirectToAction("History", "Account");
 
 			}
 			return View();

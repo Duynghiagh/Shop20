@@ -1,0 +1,90 @@
+﻿@model IEnumerable<OrderModel>
+@{
+    ViewData["title"] = "Danh Sách Lịch sử đơn hàng bởi " + " " + @ViewBag.UserEmail;
+
+}
+<h1>Danh Sách Lịch sử đơn hàng  @ViewBag.UserEmail</h1>
+<table class="table " id="detail_order">
+    <thead>
+        <tr>
+            <th scope="col">Mã Đơn hàng</th>
+            <th scope="col">Phí ship</th>
+            <th scope="col">Coupon Code</th>
+            <th scope="col">Tên người dùng</th>
+            <th scope="col">Ngày đặt hàng</th>
+            <th scope="col">Trạng thái đơn hàng</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.OrderCode</th>
+                <th scope="row">@item.ShippingCost.ToString("#,##0 VNĐ")</th>
+                <th scope="row">@item.CouponCode</th>
+                <td>@item.UserName</td>
+                <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td>
+                    @if (item.Status == 1)
+                    {
+                        <span class="text text-success">Đơn hàng mới</span>
+                    }
+                    else if (item.Status == 2)
+                    {
+                        <span class="text text-primary">Đã xử lý</span>
+                    }
+                    else
+                    {
+                        <span class="text text-danger">Đã hủy</span>
+
+                    }
+                </td>
+
+                <td>
+                    @if (item.Status != 3)
+                    {
+                        <a asp-action="CancelOrder" class="btn btn-warning btn-sm" onclick="return confirm('Xác nhận hủy đơn hàng?')"
+                           asp-controller="Account" asp-route-ordercode="@item.OrderCode">Hủy đơn hàng</a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#detail_order').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ':not(:last-child)' // Ẩn cột cuối cùng (cột Hành động) khi xuất
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':not(:last-child)'
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+}

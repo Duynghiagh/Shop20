@@ -6,26 +6,24 @@
 <table class="table" id="myTable">
     <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Tên người dùng</th>
-            <th scope="col">Email</th>
-            <th scope="col">Mật khẩu (Hash)</th>
-            <th scope="col">Số điện thoại</th>
-            <th scope="col">Vai trò</th>
-            <th scope="col">Hành động</th>
+            <th scope="col" style="font-size: 1.1em;">ID</th>
+            <th scope="col" style="font-size: 1.1em;">Tên người dùng</th>
+            <th scope="col" style="font-size: 1.1em;">Email</th>
+            <th scope="col" style="font-size: 1.1em;">Số điện thoại</th>
+            <th scope="col" style="font-size: 1.1em;">Vai trò</th>
+            <th scope="col" style="font-size: 1.1em;">Hành động</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var userWithRoles in Model)
         {
             <tr>
-                <td>@userWithRoles.User.Id</td>
-                <td>@userWithRoles.User.UserName</td>
-                <td>@userWithRoles.User.Email</td>
-                <td>@userWithRoles.User.PasswordHash</td>
-                <td>@userWithRoles.User.PhoneNumber</td>
-                <td>@userWithRoles.RoleName</td>
-                <td>
+                <td style="font-size: 1.1em;">@userWithRoles.User.Id</td>
+                <td style="font-size: 1.1em;">@userWithRoles.User.UserName</td>
+                <td style="font-size: 1.1em;">@userWithRoles.User.Email</td>
+                <td style="font-size: 1.1em;">@userWithRoles.User.PhoneNumber</td>
+                <td style="font-size: 1.1em;">@userWithRoles.RoleName</td>
+                <td style="font-size: 1.1em;">
                     <a asp-action="Edit" class="btn btn-warning btn-sm" asp-controller="User" asp-route-Id="@userWithRoles.User.Id">Sửa</a>
                     <a asp-action="Delete" class="btn btn-danger btn-sm confirmDeletion" asp-controller="User" asp-route-Id="@userWithRoles.User.Id">Xóa</a>
                 </td>
